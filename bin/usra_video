@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'usra_video'
+USRAVideo.execute(ARGV)
+
