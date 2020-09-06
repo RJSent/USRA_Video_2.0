@@ -6,8 +6,8 @@ require 'etc'
 # This class is meant to enhance a given video at a given threshold percent (converting greyscale to black and white)
 class ContrastEnhancer
   attr_reader :threshold_percent, :num_procs
-  
-  def init(threshold_percent, num_procs = Etc.nprocessors)
+
+  def initialize(threshold_percent:, num_procs: Etc.nprocessors)
     self.threshold_percent = threshold_percent
     self.num_procs = num_procs
   end
@@ -15,7 +15,11 @@ class ContrastEnhancer
   def enhance(video)
     frames = get_frames(video.frame_dir)
     frames.each_slice(num_procs).with_index(i) do |elements, i|
-      elements.each(&:enhance)
+      elements.each do |frame|
+        fork do
+          frame.enhance
+        end
+      end
       Process.waitall
     end
   end
@@ -49,5 +53,5 @@ class ContrastEnhancer
   # Perhaps change input from class methods to an actual module mixin
   def percent?(val)
     /[0-9][0-9]%/.match? val
-  end  
+  end
 end

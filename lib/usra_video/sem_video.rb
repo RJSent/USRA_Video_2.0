@@ -6,7 +6,7 @@ require 'streamio-ffmpeg'
 class SEMVideo
   attr_reader :name, :dir, :frame_dir
 
-  def init(video_name)
+  def initialize(video_name:)
     raise FileNotFoundError, "The video #{video_name} was not found" unless File.exist? video_name
 
     self.name = video_name
@@ -19,6 +19,10 @@ class SEMVideo
     video.screenshot(frame_files,
                      { vframes: (video.duration * video.frame_rate).to_i, frame_rate: video.frame_rate },
                      { validate: false }) { |progress| puts "\tExtracting frames from #{name}: #{progress * 100.truncate(1)}%" }
+  end
+
+  def footer_height
+    raise NotImplementedError, "This method is meant to be implemented, it just hasn't been yet"
   end
 
   private
