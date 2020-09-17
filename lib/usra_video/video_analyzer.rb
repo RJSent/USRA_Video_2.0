@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'mini_magick'
 # require_relative 'usra_video' # require statements may not be necessary
 
 module USRAVideo
@@ -17,8 +18,8 @@ module USRAVideo
     end
 
     def analyze
-      enhanced_video = enhancer.enhance(video, base_dir)
-      tracking_data = tracker.track(enhanced_video, base_dir)
+      enhancer.enhance(video)
+      tracking_data = tracker.track(enhanced_video)
     end
   end
 end

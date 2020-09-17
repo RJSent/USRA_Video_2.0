@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'rubygems'
+require 'bundler/setup'
+
 require_relative 'usra_video/version'
 require_relative 'usra_video/contrast_enhancer'
 require_relative 'usra_video/input'
@@ -28,7 +31,7 @@ module USRAVideo
 
   def self.prompt_args
     raise NotImplementedError,
-          'This method is meant to be implemented, it just hasn\'t been yet'
+          "This method is meant to be implemented, it just hasn't been yet"
   end
 
   def self.base_dir
@@ -36,18 +39,18 @@ module USRAVideo
   end
 
   def self.video_creator(video_name)
-    SEMVideo.new(video_name)
+    SEMVideo.new(video_name: video_name)
   end
 
   def self.enhancer_creator
-    ContrastEnhancer.new(input_percent)
+    ContrastEnhancer.new(threshold_percent)
   end
 
   def self.tracker_creator
     Tracker.new
   end
 
-  def self.input_percent
+  def self.threshold_percent
     Output.prompt_percent
     Input.answer_percent
   end

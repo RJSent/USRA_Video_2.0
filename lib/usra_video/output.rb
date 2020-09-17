@@ -5,5 +5,4 @@ module Output
   def self.prompt_percent
     puts 'Please enter a percentage, e.g. 30%'
   end
-  
 end
