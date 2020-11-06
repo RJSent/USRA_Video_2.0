@@ -39,7 +39,7 @@ module USRAVideo
   end
 
   def self.video_creator(video_name)
-    SEMVideo.new(video_name: video_name)
+    SEMVideo.new(video_file: video_name)
   end
 
   def self.enhancer_creator

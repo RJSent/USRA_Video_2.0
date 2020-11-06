@@ -31,7 +31,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  mini_magick (~> 4.10)
+  pry (~> 0.13.0)
   rake (~> 12.0)
+  ruby-opencv (= 0.0.18)
+  streamio-ffmpeg (~> 3.0)
   usra_video!
 
 BUNDLED WITH
