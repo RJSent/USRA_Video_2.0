@@ -25,8 +25,7 @@ module USRAVideo
     video = video_creator(video_name)
     enhancer = enhancer_creator
     tracker = tracker_creator
-    VideoAnalyzer.new(video: video, enhancer: enhancer, tracker: tracker, dir: base_dir)
-    VideoAnalyzer.analyze
+    VideoAnalyzer.new(video: video, enhancer: enhancer, tracker: tracker, dir: base_dir).analyze
   end
 
   def self.prompt_args
@@ -43,7 +42,7 @@ module USRAVideo
   end
 
   def self.enhancer_creator
-    ContrastEnhancer.new(threshold_percent)
+    ContrastEnhancer.new(threshold_percent: '40%')
   end
 
   def self.tracker_creator

@@ -14,49 +14,48 @@ class ContrastEnhancer
 
   # FIXME: This method is very big... Try to split up
   # FIXME: No progress output
-  def enhance(video:, output_dir: video.video_dir + '_enhanced/')
+  # FIXME: DRY, frame_dir_setup contains the same code as this
+  def enhance(video:, output_dir: video.video_file + '_Enhanced/')
     frames = get_frames(video.frame_dir)
-    frames.each_slice(num_procs).with_index(i) do |elements, i|
+    if Dir.exist?(output_dir)
+      Dir.each_child(output_dir) { |f| File.delete(output_dir + '/' + f) }
+    else
+      Dir.mkdir(output_dir)
+    end
+    frames.each_slice(num_procs).with_index(1) do |elements, i|
       elements.each do |frame|
         fork do
-          image = enhance_frame(frame)
+          image = enhance_frame(File.absolute_path(frame, video.frame_dir))
           image.write(output_dir + frame)
         end
       end
       Process.waitall
+      puts "\tEnhancing frames from #{video.name}: #{(i * elements.size / frames.size.to_f * 100).truncate(1)}%"
     end
-    export_video
+    video.class.frames_to_video(frame_dir: output_dir, duration: video.duration)
   end
 
   private
 
   attr_accessor :frames
 
-  # FIXME: this method knows about the frame numbering scheme, tightly coupled and poor design
-  # SEMVideo has a frame_numbering scheme
-  # IMO best option would be to move video_from_frames to SEMVideo class, to be called when just give a frame_directory
-  def export_video
-    `ffmpeg -framerate #{average_fps} -i #{output_dir + 'frame_%3d.png'} -pix_fmt yux420p #{video.name + '_enhanced'}`
-  end
-
   def average_fps
     frames.size / video.duration
   end
-  
+
   def get_frames(dir)
     Dir.entries(dir).reject { |f| File.directory? f }
   end
 
   def enhance_frame(frame)
-    image = MiniMagick::Image.open(video.frame_dir + '/' + frame)
-    # Square color values to improve contrast, get_pixels returns array of rows, containing array
+    image = MiniMagick::Image.open(frame)
     colors = image.get_pixels.flatten
     colors.map! { |color| color**2 / 255 }
     blob = colors.pack('C*') # Recreate the original image, credit to stackoverflow.com/questions/53764046
     image = MiniMagick::Image.import_pixels(blob, image.width, image.height, 8, 'rgb')
-    image = image.statistic('mean', '3x3')
-    image = image.threshold(threshold_percent)
-    image.statistic('mean', '6x6') # Replace with object discard below set size
+    image.statistic('mean', '3x3')
+    image.threshold(threshold_percent)
+    image.statistic('median', '6x6') # Replace with object discard below set size
   end
 
   def threshold_percent=(val)
@@ -67,8 +66,8 @@ class ContrastEnhancer
 
   # TODO: Guard against very large values of num_procs by confirming the input and warning it may crash the system
   def num_procs=(val)
-    raise InvalidIntegerFormatError, "The value #{val} is not an integer" unless val.to_i
-    raise InvalidIntegerFormatError, "The value #{val} is not > 1" unless val.to_i.positive?
+    raise ArgumentError, "The value #{val} is not an integer" unless val.to_i
+    raise ArgumentError, "The value #{val} is not > 1" unless val.to_i.positive?
 
     @num_procs = val
   end
