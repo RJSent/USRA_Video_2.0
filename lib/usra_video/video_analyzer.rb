@@ -19,8 +19,8 @@ module USRAVideo
 
     def analyze
       @video.extract_frames
-      enhancer.enhance(video: @video)
-      # tracking_data = tracker.track(enhanced_video)
+      enhanced_video = enhancer.enhance(video: @video)
+      tracking_data = tracker.track(enhanced_video)
     end
   end
 end
