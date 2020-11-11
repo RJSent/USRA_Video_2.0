@@ -9,28 +9,28 @@ class SEMVideo
   def initialize(video_file:, frame_dir: nil)
     self.video_file = video_file
     create_ffmpeg_video
-    puts "Hello"
     self.frame_dir = frame_dir.nil? ? frame_dir_setup : frame_dir
   end
 
   def extract_frames
     ffmpeg_video.screenshot(frame_files,
                             { vframes: (duration * frame_rate).to_i, frame_rate: frame_rate },
-                            { validate: false }) { |progress| puts "\tExtracting frames from #{video_file}: #{(progress * 100).truncate(1)}%" }
+                            { validate: false }) { |progress| print "\tExtracting frames from #{video_file}: #{(progress * 100).truncate(1)}%\r" }
+    puts
   end
 
   # Returns a new video in the parent of a directory filled with frames
-  def self.frames_to_video(frame_dir:, duration:, numbering: frame_numbering)
-    valid_directory(frame_dir)
+  def self.frames_to_video(frame_dir:, duration:, name: lowest_output(parent_dir(frame_dir)),
+                           numbering: frame_numbering, output_dir: parent_dir(frame_dir))
+    valid_directory?(frame_dir)
 
-    binding.pry
     frames = Dir.entries(frame_dir).reject { |f| File.directory? f }
     average_fps = frames.size / duration
-    parent_dir = File.expand_path('..', frame_dir)
-    parent_dir += '/' unless parent_dir[-1] == '/'
-    output_video = parent_dir + lowest_output(parent_dir)
-    `ffmpeg -framerate #{average_fps} -i #{frame_dir + numbering} -pix_fmt yux420p '#{output_video}`
-    new(video_file: output_video, frame_dir: frame_dir)
+    frame_files = File.join(frame_dir, numbering)
+    output_file = File.join(output_dir, name)
+    # TODO: Replace with ffmpeg code for cleaner line
+    system("ffmpeg -framerate #{average_fps} -i '#{frame_files}' -pix_fmt yuv420p '#{output_file}' -y", exception: true)
+    new(video_file: output_file, frame_dir: frame_dir)
   end
 
   def footer_height
@@ -43,6 +43,14 @@ class SEMVideo
 
   def name
     File.basename(video_file)
+  end
+
+  def name_no_ext
+    File.basename(video_file, '.*')
+  end
+
+  def extension
+    File.extname(video_file)
   end
 
   def self.frame_numbering
@@ -63,9 +71,9 @@ class SEMVideo
 
   # Delete contents of directory if it already exists, else make it
   def frame_dir_setup
-    self.class.valid_directory(base_dir)
+    self.class.valid_directory?(base_dir)
 
-    frame_dir = video_file + ' frames'
+    frame_dir = File.join(base_dir, name_no_ext + '_frames')
     if Dir.exist?(frame_dir)
       Dir.each_child(frame_dir) { |f| File.delete(frame_dir + '/' + f) }
     else
@@ -96,7 +104,7 @@ class SEMVideo
     # this will return output4.mp4
     # TODO: Could use optimizing, unnecessary sort() to protect bad algorithm
     def lowest_output(directory)
-      valid_directory(directory)
+      valid_directory?(directory)
 
       i = 1
       Dir.children(directory).sort.each do |f|
@@ -106,8 +114,12 @@ class SEMVideo
       "output#{i}.mp4"
     end
 
-    def valid_directory(directory)
+    def valid_directory?(directory)
       raise ArgumentError, "The directory #{directory} does not exist" unless Dir.exist?(directory)
+    end
+
+    def parent_dir(path)
+      File.expand_path('..', path)
     end
   end
 end

@@ -13,26 +13,23 @@ class ContrastEnhancer
   end
 
   # FIXME: This method is very big... Try to split up
-  # FIXME: No progress output
   # FIXME: DRY, frame_dir_setup contains the same code as this
-  def enhance(video:, output_dir: video.video_file + '_Enhanced/')
+  def enhance(video:, output_dir: append_enhanced(File.join(video.base_dir, video.name_no_ext)))
     frames = get_frames(video.frame_dir)
-    if Dir.exist?(output_dir)
-      Dir.each_child(output_dir) { |f| File.delete(output_dir + '/' + f) }
-    else
-      Dir.mkdir(output_dir)
-    end
+    frame_dir_setup(output_dir)
     frames.each_slice(num_procs).with_index(1) do |elements, i|
       elements.each do |frame|
         fork do
           image = enhance_frame(File.absolute_path(frame, video.frame_dir))
-          image.write(output_dir + frame)
+          image.write(File.join(output_dir, frame))
         end
       end
       Process.waitall
-      puts "\tEnhancing frames from #{video.name}: #{(i * elements.size / frames.size.to_f * 100).truncate(1)}%"
+      print "\tEnhancing frames from #{video.name}: #{(i * elements.size / frames.size.to_f * 100).truncate(1)}%\r"
     end
-    video.class.frames_to_video(frame_dir: output_dir, duration: video.duration)
+    puts
+    output_name = append_enhanced(video.name_no_ext) + video.extension
+    video.class.frames_to_video(frame_dir: output_dir, duration: video.duration, name: output_name)
   end
 
   private
@@ -41,6 +38,14 @@ class ContrastEnhancer
 
   def average_fps
     frames.size / video.duration
+  end
+
+  def frame_dir_setup(dir)
+    if Dir.exist?(dir)
+      Dir.each_child(dir) { |f| File.delete(File.join(dir, f)) }
+    else
+      Dir.mkdir(dir)
+    end
   end
 
   def get_frames(dir)
@@ -59,7 +64,7 @@ class ContrastEnhancer
   end
 
   def threshold_percent=(val)
-    raise InvalidPercentFormatError, "The value #{val} is not a percent" unless percent?(val)
+    raise ArgumentError, "The value #{val} is not a percent" unless percent?(val)
 
     @threshold_percent = val
   end
@@ -75,6 +80,11 @@ class ContrastEnhancer
   # TODO: Consider creating a validation module, as both Input and ContrastEnhancer use the same logic. (DRY)
   # Don't want ContrastEnhancer to call Input module's method (Minimize dependencies + Law of Demeter)
   # Perhaps change input from class methods to an actual module mixin
+
+  def append_enhanced(string)
+    string.to_s + '_enhanced'
+  end
+  
   def percent?(val)
     /[0-9][0-9]%/.match? val
   end
