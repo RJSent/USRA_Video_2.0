@@ -29,12 +29,13 @@ class SEMVideo
     frame_files = File.join(frame_dir, numbering)
     output_file = File.join(output_dir, name)
     # TODO: Replace with ffmpeg code for cleaner line
-    system("ffmpeg -framerate #{average_fps} -i '#{frame_files}' -pix_fmt yuv420p '#{output_file}' -y", exception: true)
+    system("ffmpeg -framerate #{average_fps} -i '#{frame_files}' -vf pad='width=ceil(iw/2)*2:height=ceil(ih/2)*2' -pix_fmt yuv420p '#{output_file}' -y", exception: true)
     new(video_file: output_file, frame_dir: frame_dir)
   end
 
+  # TODO: calculate footer height, don't just use constant
   def footer_height
-    raise NotImplementedError, "This method is meant to be implemented, it just hasn't been yet"
+    55
   end
 
   def base_dir
