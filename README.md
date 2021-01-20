@@ -1,8 +1,11 @@
 # UsraVideo
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/usra_video`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is a work in programm gem written during undergraduate research with Cleveland State University's undergraduate physics department. The goal of the gem is to assist with quickly analyzing electron microscope videos of microgels suspended in ionic liquid. This is accomplished in several steps.
 
-TODO: Delete this and the text above, and describe your gem
+1. Convert the image to black and white, where the microgels are white and the background is black. The header is not adjusted.
+2. Perform object detection of microgel particles using OpenCV and a Haar Cascade model.
+3. Look between adjacent frames, trying to group microgel positions together. This would track the position of microgels for the entire video.
+4. Use the positional data that was just gathered to automatically analyze the microgels.
 
 ## Installation
 
@@ -22,18 +25,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem comes with an executable called usra_video. You can run the application with
 
-## Development
+     $ usra_video FILE
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/usra_video.
-
+where FILE is the video you want to analyze.
 
 ## License
 
