@@ -1,0 +1,187 @@
+* UML Diagrams
+
+** Creation of objects
+
+#+begin_src mermaid :file object_initialization.png
+  sequenceDiagram
+  participant USRAVideo
+  participant SEMVideo
+  participant ContrastEnhancer
+  participant Tracker
+  participant Detector
+
+  USRAVideo->>SEMVideo: Create a video object for Media/Video C.avi
+  activate SEMVideo
+  SEMVideo->>USRAVideo: Returns SEMVideo object
+  deactivate SEMVideo
+
+  USRAVideo->>ContrastEnhancer: Create a enhancer that uses 30% as the threshold
+  activate ContrastEnhancer
+  ContrastEnhancer->>USRAVideo: Returns ContrastEnhancer object
+  deactivate ContrastEnhancer
+
+  USRAVideo->>Tracker: Create a tracker object for Media/Video C.avi with this detection model
+  activate Tracker
+  Tracker->>Detector: Create a detector object with this detection model
+  deactivate Tracker
+  activate Detector
+  Detector->>Tracker: Returns Detector object
+  deactivate Detector
+  activate Tracker
+      Tracker->>USRAVideo: Returns a Tracker object
+  deactivate Tracker
+#+end_src
+
+#+RESULTS:
+[[file:sequence_diagram.png]]
+
+** Analysis Birds Eye
+#+begin_src mermaid :file analysis_birds_eye.png
+  sequenceDiagram
+  participant U as USRAVideo
+  participant V as VideoAnalyzer
+
+  U->>V: Analyze Media/Video C.avi using this ContrastEnhancer and this Tracker
+      %% Note right of VideoAnalyzer: Runs analysis
+  V->>V: Runs analysis
+  V->>U: Done! You can find the data here.
+#+end_src
+
+#+RESULTS:
+[[file:analysis_birds_eye.png]]
+
+** Analysis More Details
+
+*** Enhancement
+#+begin_src mermaid :file analysis_enhancement.png
+sequenceDiagram
+  participant V as VideoAnalyzer
+  participant C as ContrastEnhancer
+participant S as SEMVideo
+
+  V->>C: Enhance this SEMVideo object
+  activate C
+  C->>S: Extract your frames into a folder
+  deactivate C
+  activate S
+  S->>C: The frames are located in $DIR
+  deactivate S
+  activate C
+  loop EnhanceFrames
+      C->>C: Enhance Contrast
+      C->>C: Mean filter
+      C->>C: Threshold
+      C-->C: Despeckle
+  end
+C->>S: Convert these frames in $DIR to a new SEMVideo
+deactivate C
+activate S
+S->>C: Returns new SEMVideo
+C->>V: Returns new SEMVideo
+#+end_src
+
+#+RESULTS:
+[[file:analysis_enhancement.png]]
+
+*** Tracking
+#+begin_src mermaid :file analysis_tracking.png
+sequenceDiagram
+participant V as VideoAnalyzer
+participant S as SEMVideo
+participant T as Tracker
+participant D as Detector
+participant P as Pairer
+
+V->>T: Track this SEMVideo object
+activate T
+T->>S: Where are your frames located?
+deactivate T
+activate S
+S->>T: They are located in $DIR
+deactivate S
+activate T
+loop DetectInFrames
+T->>D: Where are the particles located in this frame?
+activate D
+D->>D: Detects particles with OpenCV
+D->>T: Here are the positions of the particles.
+deactivate D
+end
+loop GroupObjects
+T->>P: Here are particles in 2 different frames. Pair them together.
+activate P
+Note over T,P: Pairing means determining out of the list, what pair of points corresponds to 1 particle
+P->>T: These are the particles I paired
+deactivate P
+activate T
+T->>T: Store pairings and combine with old
+end
+T->>V: Returns a list of particles, each containing a series of xy points
+deactivate T
+#+end_src
+
+#+RESULTS:
+[[file:analysis_tracking.png]]
+
+*** Full
+#+begin_src mermaid :file analysis_full.png
+sequenceDiagram
+  participant V as VideoAnalyzer
+  participant C as ContrastEnhancer
+
+  V->>C: Enhance this SEMVideo object
+  activate C
+  C->>S: Extract your frames into a folder
+  deactivate C
+  activate S
+  S->>C: The frames are located in $DIR
+  deactivate S
+  activate C
+  loop EnhanceFrames
+      C->>C: Enhance Contrast
+      C->>C: Mean filter
+      C->>C: Threshold
+      C-->C: Despeckle
+  end
+C->>S: Convert these frames in $DIR to a new SEMVideo
+deactivate C
+activate S
+S->>C: Returns new SEMVideo
+C->>VideoAnalyzer: Returns new SEMVideo
+
+participant S as SEMVideo
+participant T as Tracker
+participant D as Detector
+participant P as Pairer
+
+V->>T: Track this SEMVideo object
+activate T
+T->>S: Where are your frames located?
+deactivate T
+activate S
+S->>T: They are located in $DIR
+deactivate S
+activate T
+loop DetectInFrames
+T->>D: Where are the particles located in this frame?
+activate D
+D->>D: Detects particles with OpenCV
+D->>T: Here are the positions of the particles.
+deactivate D
+end
+loop GroupObjects
+T->>P: Here are particles in 2 different frames. Pair them together.
+activate P
+Note over T,P: Pairing means determining out of the list, what pair of points corresponds to 1 particle
+P->>T: These are the particles I paired
+deactivate P
+activate T
+T->>T: Store pairings and combine with old
+end
+T->>V: Returns a list of particles, each containing a series of xy points
+deactivate T
+#+end_src
+
+#+RESULTS:
+[[file:analysis_full.png]]
+

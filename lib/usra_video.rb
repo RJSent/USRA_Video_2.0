@@ -42,7 +42,7 @@ module USRAVideo
   end
 
   def self.enhancer_creator
-    ContrastEnhancer.new(threshold_percent: '40%')
+    ContrastEnhancer.new(threshold_percent: '28%')
   end
 
   def self.tracker_creator

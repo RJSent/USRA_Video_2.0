@@ -29,7 +29,7 @@ class SEMVideo
     frame_files = File.join(frame_dir, numbering)
     output_file = File.join(output_dir, name)
     # TODO: Replace with ffmpeg code for cleaner line
-    system("ffmpeg -framerate #{average_fps} -i '#{frame_files}' -vf pad='width=ceil(iw/2)*2:height=ceil(ih/2)*2' -pix_fmt yuv420p '#{output_file}' -y", exception: true)
+    system("ffmpeg -framerate #{average_fps} -i '#{frame_files}' #{ffmpeg_padding} #{ffmpeg_output_fix} '#{output_file}' #{ffmpeg_overwrite}", exception: true)
     new(video_file: output_file, frame_dir: frame_dir)
   end
 
@@ -54,8 +54,16 @@ class SEMVideo
     File.extname(video_file)
   end
 
+  def path
+    File.path(video_file)
+  end
+
   def self.frame_numbering
-    'frame_%3d.png'
+    'frame_%04d.png'
+  end
+
+  def frame_numbering
+    self.class.frame_numbering
   end
 
   def frame_rate
@@ -121,6 +129,18 @@ class SEMVideo
 
     def parent_dir(path)
       File.expand_path('..', path)
+    end
+
+    def ffmpeg_padding
+      "-vf pad=\'width=ceil(iw/2)*2:height=ceil(ih/2)*2'"
+    end
+
+    def ffmpeg_overwrite
+      '-y'
+    end
+
+    def ffmpeg_output_fix
+      '-pix_fmt yuv420p'
     end
   end
 end

@@ -70,9 +70,9 @@ class ContrastEnhancer
     colors.map! { |color| color**2 / 255 }
     blob = colors.pack('C*') # Recreate the original image, credit to stackoverflow.com/questions/53764046
     image = MiniMagick::Image.import_pixels(blob, image.width, image.height, 8, 'rgb')
-    image.statistic('mean', '3x3')
+    image.statistic('mean', '6x6')
     image.threshold(threshold_percent)
-    image.statistic('median', '6x6') # Replace with object discard below set size
+    image.statistic('median', '9x9') # Replace with object discard below set size
   end
 
   # Splits frame into two images, enhances one, recombines
