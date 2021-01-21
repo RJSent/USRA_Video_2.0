@@ -1,6 +1,6 @@
 # UsraVideo
 
-This is a work in programm gem written during undergraduate research with Cleveland State University's undergraduate physics department. The goal of the gem is to assist with quickly analyzing electron microscope videos of microgels suspended in ionic liquid. This is accomplished in several steps.
+This is a work in progress gem written during undergraduate research with Cleveland State University's physics department. The goal of the gem is to assist with quickly analyzing electron microscope videos of microgels suspended in ionic liquid. This is accomplished in several steps.
 
 1. Convert the image to black and white, where the microgels are white and the background is black. The header is not adjusted.
 2. Perform object detection of microgel particles using OpenCV and a Haar Cascade model.
