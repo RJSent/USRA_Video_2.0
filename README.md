@@ -53,7 +53,7 @@ liquid.
 
 ### After
 
-![Silica After](/images/frame_0039_content.png)
+![Silica After](/images/frame_039_content.png)
 
 ## Logic
 
