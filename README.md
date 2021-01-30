@@ -49,11 +49,11 @@ liquid.
 
 ### Before
 
-![Silica Before](/images/frame_0039.png)
+<img src="images/frame_0039.png" alt="Original image" width="600" />
 
 ### After
 
-![Silica After](/images/frame_039_content.png)
+<img src="images/frame_039_content.png" alt="Enhanced and tracked image" width="600" />
 
 ## Logic
 
@@ -63,11 +63,11 @@ using [Mermaid](https://github.com/mermaid-js/mermaid).
 
 ### Enhancement
 
-![Enhancement Sequence Diagram](/images/analysis_enhancement.png)
+<img src="images/analysis_enhancement.png" alt="Enhancement sequence diagram" width="600" />
 
 ### Tracking
 
-![Tracking Sequence Diagram](/images/analysis_tracking.png)
+<img src="images/analysis_tracking.png" alt="Tracking sequence diagram" width="600" />
 
 ## License
 
