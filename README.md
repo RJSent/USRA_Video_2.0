@@ -57,8 +57,8 @@ liquid.
 
 ## Logic
 
-Here are several sequences that should provide a outline of how the
-different classes interact with each other. The diagrams were made
+Here are some sequence diagrams that should provide a outline of how
+the different classes interact with each other. The diagrams were made
 using [Mermaid](https://github.com/mermaid-js/mermaid).
 
 ### Enhancement
