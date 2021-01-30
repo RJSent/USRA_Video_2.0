@@ -3,16 +3,16 @@
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Installation](#paragraph1)
-    a. [Dependencies](#subparagraph1)
-3. [Usage](#paragraph2)
-4. [Example](#paragraph3)
-    a. [Before](#subparagraph3)
-    b. [After](#sub2paragraph3)
-5. [Logic](#paragraph4)
-    a. [Enhancement](#subparagraph4)
-    b. [Tracking](#sub2paragraph4)
-6. [License](#paragraph5)
+2. [Installation](#installation)
+    1. [Dependencies](#subinstallation)
+3. [Usage](#usage)
+4. [Example](#example)
+    1. [Before](#subexample)
+    2. [After](#sub2example)
+5. [Logic](#logic)
+    1. [Enhancement](#sublogic)
+    2. [Tracking](#sub2logic)
+6. [License](#license)
 
 ## Introduction <a name="introduction"></a>
 
@@ -27,7 +27,7 @@ steps.
 3. Look between adjacent frames, trying to group microgel positions together. This would track the position of microgels for the entire video.
 4. Use the positional data that was just gathered to automatically analyze the microgels.
 
-## Installation <a name="paragraph1"></a>
+## Installation <a name="installation"></a>
 
 Add this line to your application's Gemfile:
 
@@ -43,7 +43,7 @@ Or install it yourself as:
 
     $ gem install usra_video
 
-### Dependencies <a name="subparagraph1"></a>
+### Dependencies <a name="subinstallation"></a>
 
 Be sure that ImageMagick and OpenCV 2.4.13.7 are installed on the
 system. Other versions of OpenCV < 3.0 may work, but are untested.
@@ -51,7 +51,7 @@ This is a limitation of the ruby-opencv gem dependency. Depending on
 where OpenCV is installed, the ruby-opencv gem may need to be pointed
 at the location during installation.
 
-## Usage <a name="paragraph2"></a>
+## Usage <a name="usage"></a>
 
 This gem comes with an executable called usra_video. You can run the application with
 
@@ -59,34 +59,34 @@ This gem comes with an executable called usra_video. You can run the application
 
 where FILE is the video you want to analyze.
 
-## Example <a name="paragraph3"></a>
+## Example <a name="example"></a>
 
 This is an example showing the effectiveness of the contrast
 enhancement and particle tracking for silica particles in ionic
 liquid.
 
-### Before <a name="subparagraph3"></a>
+### Before <a name="subexample"></a>
 
 <img src="images/frame_0039.png" alt="Original image" width="600" />
 
-### After <a name="sub2paragraph3"></a>
+### After <a name="sub2example"></a>
 
 <img src="images/frame_039_content.png" alt="Enhanced and tracked image" width="600" />
 
-## Logic <a name="paragraph4"></a>
+## Logic <a name="logic"></a>
 
 Here are some sequence diagrams that should provide a outline of how
 the different classes interact with each other. The diagrams were made
 using [Mermaid](https://github.com/mermaid-js/mermaid).
 
-### Enhancement <a name="subparagraph4"></a>
+### Enhancement <a name="sublogic"></a>
 
 <img src="images/analysis_enhancement.png" alt="Enhancement sequence diagram" width="600" />
 
-### Tracking <a name="sub2paragraph4"></a>
+### Tracking <a name="sub2logic"></a>
 
 <img src="images/analysis_tracking.png" alt="Tracking sequence diagram" width="600" />
 
-## License < a name="paragraph5"></a>
+## License <a name="license"></a>
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
